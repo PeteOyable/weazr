@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "d3-path": "^1.0.9",
     "dayjs": "^1.8.19",
     "expo": "~36.0.0",
     "expo-linear-gradient": "~8.0.0",

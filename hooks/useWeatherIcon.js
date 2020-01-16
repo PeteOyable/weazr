@@ -1,4 +1,5 @@
 import { useState } from "react";
+import constants from "../constants";
 
 const defineWeatherImage = (iconCode) => {
   let icon = require('../assets/icons/Sunny.png');
@@ -25,16 +26,39 @@ const defineWeatherImage = (iconCode) => {
   return icon;
 }
 
-const useWeatherImage = () => {
-  const [weatherIcon, setWeatherIcon] = useState(null);
+const defineWeatherIcon = (iconCode) => {
+  let icon = constants.ICONS.SUN;
+  if (iconCode >= 1 && iconCode < 7) {
+    icon = constants.ICONS.SUN;
+  } else if (iconCode >= 7 && iconCode < 12) {
+    icon = constants.ICONS.CLOUD;
+  } else if (iconCode >= 12 && iconCode < 15 || iconCode >= 40 && iconCode < 43) {
+    icon = constants.ICONS.RAIN;
+  } else if (iconCode >= 15 && iconCode < 19) {
+    icon = constants.ICONS.LIGHTNING;
+  } else if (iconCode >= 19 && iconCode < 25 || iconCode >= 43 && iconCode < 45) {
+    icon = constants.ICONS.SNOW;
+  } else if (iconCode >= 25 && iconCode < 31) {
+    icon = constants.ICONS.LIGHTNING;
+  } else if (iconCode >= 33) {
+    icon = constants.ICONS.MOON;
+  } 
 
+  return icon;
+}
+
+const useWeatherImage = () => {
   const getWeatherImage = (iconCode) => {
     return defineWeatherImage(iconCode);
   }
 
+  const getWeatherIcon = (iconCode) => {
+    return defineWeatherIcon(iconCode);
+  }
+
   return {
     getWeatherImage,
-    weatherIcon,
+    getWeatherIcon,
   };
 
 }

@@ -5,12 +5,19 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated'
 import Forecast from './Forecast';
 import Summary from './Summary';
+import Svg, { Defs, ClipPath, Path, Rect } from 'react-native-svg';
+import useColors from '../hooks/useColors';
 
-const { height } = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
-const Informations = ({ gestureHandler, constrainedY, paddingForecast, summaryOpacity, summaryY, forecastOpacity, forecastY }) => {
+const AnimatedSvg = Animated.createAnimatedComponent(Svg);
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+const Informations = ({ gestureHandler, constrainedY, paddingForecast, summaryOpacity, summaryY, forecastOpacity, forecastY, panPath }) => {
   const panGesture = React.createRef();
   const tabGesture = React.createRef();
+
+  const { color } = useColors();
 
   return (
     <PanGestureHandler
@@ -28,20 +35,34 @@ const Informations = ({ gestureHandler, constrainedY, paddingForecast, summaryOp
             { translateY: constrainedY }]
         }]
       }>
-        <Animated.View style={{ ...styles.forecastContainer, paddingTop: paddingForecast }}>
-          <View style={{...styles.cityContainer}}>
-            <Text style={{ ...styles.city }}>MONTRÉAL</Text>
-          </View>
-          <Summary
-            isAbsolute={false}
-            summaryOpacity={summaryOpacity}
-            summaryY={summaryY}
+        <AnimatedSvg style={{...styles.svg}} height={50} width={width}>
+          <Defs>
+            <ClipPath id="clipPath">
+              <AnimatedPath d={panPath} fill={constants.COLORS.SIMPLE.MORNING}  />
+              {/* <AnimatedCircle r={height * 0.60} cx={width / 2} cy={gradientY} /> */}
+            </ClipPath>
+          </Defs>
+          <Rect
+            clipPath="url(#clipPath)"
+            fill={constants.COLORS.SIMPLE.WHITE}
+            width={width}
+            height={50}
           />
-          <Forecast
-            forecastOpacity={forecastOpacity}
-            forecastY={forecastY}
-          />
-        </Animated.View>
+        </AnimatedSvg>
+        <Animated.View style={{ ...styles.forecastContainer }}>
+            <View style={{...styles.cityContainer}}>
+              <Text style={{ ...styles.city, color }}>MONTRÉAL</Text>
+            </View>
+            <Summary
+              isAbsolute={false}
+              summaryOpacity={summaryOpacity}
+              summaryY={summaryY}
+            />
+            <Forecast
+              forecastOpacity={forecastOpacity}
+              forecastY={forecastY}
+            />
+          </Animated.View>
       </Animated.View>
     </PanGestureHandler>
   )
@@ -50,7 +71,14 @@ const Informations = ({ gestureHandler, constrainedY, paddingForecast, summaryOp
 const styles = StyleSheet.create({
   panContainer: {
     backgroundColor: constants.COLORS.SIMPLE.WHITE,
+    position: 'relative',
     height: height,
+    overflow: 'visible'
+  },
+
+  svg: {
+    ...StyleSheet.absoluteFill,
+    top: -50
   },
 
   forecastContainer: {
@@ -65,7 +93,6 @@ const styles = StyleSheet.create({
   city: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: constants.COLORS.SIMPLE.MORNING,
   },
 })
 

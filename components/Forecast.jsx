@@ -3,8 +3,17 @@ import { View, StyleSheet, Text } from 'react-native';
 import {Feather} from '@expo/vector-icons'
 import constants from '../constants';
 import Animated from 'react-native-reanimated';
+import useWeather from '../hooks/useWeather';
+import useDate from '../hooks/useDate';
+import useWeatherImage from '../hooks/useWeatherIcon';
+import useColors from '../hooks/useColors';
 
-const Forecast = ({forecastOpacity, forecastY}) => {
+const Forecast = ({ forecastOpacity, forecastY }) => {
+  const { forecastForWeek } = useWeather();
+  const { getDay } = useDate();
+  const { getWeatherIcon } = useWeatherImage();
+  const { color } = useColors();
+
   return (
     <Animated.View style={{
       ...styles.container,
@@ -13,31 +22,15 @@ const Forecast = ({forecastOpacity, forecastY}) => {
         translateY: forecastY
       }]
     }}>
-      <View style={{ ...styles.item }}>
-        <Text style={{...styles.day}}>Monday</Text>
-        <Feather name={constants.ICONS.SNOW} size={22} color={constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...styles.temperature}}>2° / -5°</Text>
-      </View>
-      <View style={{ ...styles.item }}>
-        <Text style={{...styles.day}}>Monday</Text>
-        <Feather name={constants.ICONS.SNOW} size={22} color={constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...styles.temperature}}>2° / -5°</Text>
-      </View>
-      <View style={{ ...styles.item }}>
-        <Text style={{...styles.day}}>Monday</Text>
-        <Feather name={constants.ICONS.SNOW} size={22} color={constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...styles.temperature}}>2° / -5°</Text>
-      </View>
-      <View style={{ ...styles.item }}>
-        <Text style={{...styles.day}}>Monday</Text>
-        <Feather name={constants.ICONS.SNOW} size={22} color={constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...styles.temperature}}>2° / -5°</Text>
-      </View>
-      <View style={{ ...styles.item }}>
-        <Text style={{...styles.day}}>Monday</Text>
-        <Feather name={constants.ICONS.SNOW} size={22} color={constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...styles.temperature}}>2° / -5°</Text>
-      </View>
+      {
+        forecastForWeek.map((day, index) => (
+          <View key={index} style={{ ...styles.item }}>
+            <Text style={{ ...styles.day, color }}>{getDay(day.Date)}</Text>
+            <Feather name={getWeatherIcon(day.Day.Icon)} size={22} color={constants.COLORS.SIMPLE.GRAY} />
+            <Text style={{ ...styles.temperature, color }}>{Math.round(day.Temperature.Minimum.Value)}° / {Math.round(day.Temperature.Maximum.Value)}°</Text>
+          </View>
+        ))
+      }
     </Animated.View>
   );
 };
@@ -58,12 +51,10 @@ const styles = StyleSheet.create({
   },
 
   day: {
-    color: constants.COLORS.SIMPLE.MORNING,
     fontSize: 16,
   },
 
   temperature: {
-    color: constants.COLORS.SIMPLE.MORNING,
     fontSize: 16,
   }
 });

@@ -44,3 +44,24 @@ export const getForecastByHour = async () => {
     console.log(error);
   }
 }
+
+
+export const getForecastForWeek = async () => {
+  try {
+    const response = await fetch(`${API_URL}/forecasts/v1/daily/5day/${LOCATION_KEY}?apikey=${API_KEY}&metric=true`);
+    const forecast = await response.json();
+    if (response.status === 200) {
+      return {
+        status: constants.MESSAGES.OK,
+        result: forecast.DailyForecasts
+      };
+    } else {
+      return {
+        status: constants.MESSAGES.NOK,
+        result: null
+      };
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}

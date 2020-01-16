@@ -1,44 +1,37 @@
 import React from 'react';
 import { StyleSheet, Dimensions, View } from 'react-native';
-import Svg, { ClipPath, Circle, Rect, LinearGradient, Defs, Stop } from 'react-native-svg';
+import Svg, { Rect, LinearGradient, Defs, Stop } from 'react-native-svg';
 import Animated from 'react-native-reanimated'
 import Summary from './Summary';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useWeather from '../hooks/useWeather';
-import useGradient from '../hooks/useGradient';
+import useColors from '../hooks/useColors';
 import useWeatherImage from '../hooks/useWeatherIcon';
+import constants from '../constants';
 
 const { height, width } = Dimensions.get('window');
 
-const AnimatedRect = Animated.createAnimatedComponent(Rect);
-const AnimatedSvg = Animated.createAnimatedComponent(Svg);
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-
-const Background = ({ gradientHeight, gradientY, weatherY, temperatureOpacity, temperatureY, iconOpacity, iconScale, summaryOpacity, summaryY }) => {
+const Background = ({ weatherY, temperatureOpacity, temperatureY, iconOpacity, iconScale, summaryOpacity, summaryY }) => {
   const { currentConditions } = useWeather();
-  const { gradient } = useGradient();
+  const { gradient } = useColors();
   const { getWeatherImage } = useWeatherImage();
   return (
-    <Animated.View style={{...styles.gradientContainer, height : gradientHeight}}>
-      <AnimatedSvg height={gradientHeight} width={width}>
+    <View style={{...styles.gradientContainer}}>
+      <Svg height={height * 0.66} width={width}>
         <Defs>
           <LinearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <Stop offset="0%" stopColor={gradient[0]} stopOpacity="1" />
             <Stop offset="100%" stopColor={gradient[1]} stopOpacity="1" />
           </LinearGradient>
         </Defs>
-        <ClipPath id="clipPath">
-          <AnimatedCircle r={height * 0.60} cx={width / 2} cy={gradientY} />
-        </ClipPath>
-        <AnimatedRect
+        <Rect
           fill="url(#gradient)"
-          clipPath="url(#clipPath)"
           width={width}
-          height={gradientHeight}
+          height={height * 0.66}
         />
         {currentConditions && (
           <SafeAreaView>
-            <View style={styles.informations}>
+            <Animated.View style={styles.informations}>
               <Animated.Text style={{ ...styles.weather, transform: [{ translateY: weatherY }] }}>{currentConditions.WeatherText}</Animated.Text>
               <Animated.Text
                 style={{
@@ -58,21 +51,22 @@ const Background = ({ gradientHeight, gradientY, weatherY, temperatureOpacity, t
                     { scale: iconScale}
                   ]
                 }} /> 
-            </View>
+            </Animated.View>
             <Summary
               summaryOpacity={summaryOpacity}
               summaryY={summaryY}
             />
         </SafeAreaView>
         )}
-      </AnimatedSvg>
-    </Animated.View>
+      </Svg>
+    </View>
   ) 
 }
     
 const styles = StyleSheet.create({
   gradientContainer: {
     ...StyleSheet.absoluteFill,
+    height : height * 0.66
   },
 
   informations: {
@@ -82,11 +76,13 @@ const styles = StyleSheet.create({
   },
 
   weather: {
+    color: constants.COLORS.SIMPLE.WHITE,
     fontSize: 16,
     marginBottom: 10
   },
 
   temperature: {
+    color: constants.COLORS.SIMPLE.WHITE,
     fontSize: 60,
     marginBottom: 30
   },

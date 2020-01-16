@@ -20,8 +20,10 @@ export default {
     SUN: 'sun',
     FOG: 'align-center',
     LIGHTNING: 'cloud-lightning',
+    MOON: 'moon',
     RAIN: 'cloud-rain',
-    SNOW: 'cloud-snow',
+    SNOW: 'cloud-snow'
+
   },
   MESSAGES: {
     OK: 'OK',

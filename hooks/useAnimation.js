@@ -1,7 +1,8 @@
 import Animated from 'react-native-reanimated'
-import { onGestureEvent, spring } from 'react-native-redash';
+import { onGestureEvent, spring, interpolatePath } from 'react-native-redash';
 import { State } from 'react-native-gesture-handler';
 import { Dimensions } from 'react-native';
+import { path } from 'd3-path';
 
 const {
   add,
@@ -20,8 +21,28 @@ const {
   neq
 } = Animated;
 
-const { height } = Dimensions.get('screen');
-const SNAP_POINTS = [height * 0.25, height * 0.60];
+const { height, width } = Dimensions.get('screen');
+const SNAP_POINTS = [height * 0.33, height * 0.66];
+
+const getLinePath = () => {
+  const context = path();
+  context.moveTo(0, 0);
+  context.lineTo(width, 0);
+  context.lineTo(width, 50);
+  context.lineTo(0, 50);
+  context.closePath();
+  return context.toString();
+}
+
+const getCurvedPath = () => {
+  const context = path();
+  context.moveTo(0, 25);
+  context.bezierCurveTo(width / 2, -30, width / 2, 30, width, 25);
+  context.lineTo(width, 50)
+  context.lineTo(0, 50);
+  context.closePath();
+  return context.toString();
+}
 
 const useAnimation = () => {
   const config = {
@@ -35,7 +56,6 @@ const useAnimation = () => {
 
   const START = SNAP_POINTS[0];
   const END = SNAP_POINTS[SNAP_POINTS.length - 1];
-  const PAN_MARGIN_TOP = 20;
 
   const translationY = new Value(0);
   const state = new Value(State.UNDETERMINED);
@@ -43,6 +63,9 @@ const useAnimation = () => {
   const offsetY = new Value(START);
   const transY = new Value(START);
   const clock = new Clock();
+
+  const linedPath = getLinePath();
+  const curvedPath = getCurvedPath();
   
   const gestureHandler = onGestureEvent({
     translationY,
@@ -104,13 +127,13 @@ const useAnimation = () => {
 
   const gradientY = interpolate(translateY, {
     inputRange: [START, END],
-    outputRange: [-START - PAN_MARGIN_TOP, -PAN_MARGIN_TOP],
+    outputRange: [START, END],
     extrapolate: Extrapolate.CLAMP
   });
 
   const weatherY = interpolate(translateY, {
     inputRange: [START, END],
-    outputRange: [60, 0],
+    outputRange: [-100, 0],
     extrapolate: Extrapolate.CLAMP
   });
   
@@ -180,10 +203,16 @@ const useAnimation = () => {
     extrapolate: Extrapolate.CLAMP
   });
 
+  const panPath = interpolatePath(translateY, {
+    inputRange: [START, END],
+    outputRange: [linedPath, curvedPath],
+  })
+
   return {
     gestureHandler,
     constrainedY,
     gradientHeight,
+    panPath,
     gradientY,
     weatherY,
     iconScale,

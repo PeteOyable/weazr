@@ -10,6 +10,7 @@ const Weazr = () => {
     constrainedY,
     gradientHeight,
     gradientY,
+    panPath,
     iconOpacity,
     iconScale,
     paddingForecast,
@@ -36,6 +37,7 @@ const Weazr = () => {
         weatherY={weatherY}
         summaryOpacity={summaryOpacity}
         summaryY={summaryY}
+        
       />
       
       <Informations
@@ -46,6 +48,7 @@ const Weazr = () => {
         summaryY={summary2Y}
         forecastOpacity={forecastOpacity}
         forecastY={forecastY}
+        panPath={panPath}
       />
     </View>
   )

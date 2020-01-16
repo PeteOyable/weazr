@@ -5,6 +5,9 @@ import constants from '../constants';
 import Animated from 'react-native-reanimated';
 import { useSafeArea } from 'react-native-safe-area-context';
 import useWeather from '../hooks/useWeather';
+import useDate from '../hooks/useDate';
+import useWeatherImage from '../hooks/useWeatherIcon';
+import useColors from '../hooks/useColors';
 
 const getContainerStyles = (isAbsolute, insets) => {
   return {
@@ -14,16 +17,16 @@ const getContainerStyles = (isAbsolute, insets) => {
   }
 };
 
-const getHourStyles = (isAbsolute) => {
+const getHourStyles = (isAbsolute, color) => {
   return {
-    color: isAbsolute ? 'black' : constants.COLORS.SIMPLE.MORNING,
+    color: isAbsolute ? constants.COLORS.SIMPLE.WHITE : color,
     ...styles.hour
   }
 };
 
-const getTemperatureStyles = (isAbsolute) => {
+const getTemperatureStyles = (isAbsolute, color) => {
   return {
-    color: isAbsolute ? 'black' : constants.COLORS.SIMPLE.MORNING,
+    color: isAbsolute ? constants.COLORS.SIMPLE.WHITE : color,
     ...styles.temperature
   }
 };
@@ -31,6 +34,9 @@ const getTemperatureStyles = (isAbsolute) => {
 const Summary = ({ summaryOpacity, summaryY, isAbsolute = true }) => {
   const insets = useSafeArea();
   const { forecastByHour } = useWeather();
+  const { getHour } = useDate();
+  const { getWeatherIcon } = useWeatherImage();
+  const { color } = useColors();
 
   return (
     <Animated.View style={{
@@ -41,38 +47,13 @@ const Summary = ({ summaryOpacity, summaryY, isAbsolute = true }) => {
     }}>
       {
         forecastByHour.map((hour, index) => (
-          <View style={{...styles.element}}>
-            <Text style={{...getHourStyles(isAbsolute)}}>Now</Text>
-            <Feather name={constants.ICONS.CLOUD} size={22} color={isAbsolute ? 'black' : constants.COLORS.SIMPLE.GRAY} />
-            <Text style={{ ...getTemperatureStyles(isAbsolute) }}>{hour.Temperature.Value}</Text>
+          <View key={index} style={{...styles.element}}>
+            <Text style={{ ...getHourStyles(isAbsolute, color) }}>{getHour(hour.DateTime)}</Text>
+            <Feather name={getWeatherIcon(hour.WeatherIcon)} size={22} color={isAbsolute ? constants.COLORS.SIMPLE.WHITE : constants.COLORS.SIMPLE.GRAY} />
+            <Text style={{ ...getTemperatureStyles(isAbsolute, color) }}>{Math.round(hour.Temperature.Value)}°</Text>
           </View>
         ))
       }
-      <View style={{...styles.element}}>
-        <Text style={{...getHourStyles(isAbsolute)}}>Now</Text>
-        <Feather name={constants.ICONS.CLOUD} size={22} color={isAbsolute ? 'black' : constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...getTemperatureStyles(isAbsolute)}}>1°</Text>
-      </View>
-      <View style={{...styles.element}}>
-        <Text style={{...getHourStyles(isAbsolute)}}>21</Text>
-        <Feather name={constants.ICONS.SUN} size={22} color={isAbsolute ? 'black' : constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...getTemperatureStyles(isAbsolute)}}>2°</Text>
-      </View>
-      <View style={{...styles.element}}>
-        <Text style={{...getHourStyles(isAbsolute)}}>22</Text>
-        <Feather name={constants.ICONS.RAIN} size={22} color={isAbsolute ? 'black' : constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...getTemperatureStyles(isAbsolute)}}>3°</Text>
-      </View>
-      <View style={{...styles.element}}>
-        <Text style={{...getHourStyles(isAbsolute)}}>23</Text>
-        <Feather name={constants.ICONS.LIGHTNING} size={22} color={isAbsolute ? 'black' : constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...getTemperatureStyles(isAbsolute)}}>-3°</Text>
-      </View>
-      <View style={{...styles.element}}>
-        <Text style={{...getHourStyles(isAbsolute)}}>24</Text>
-        <Feather name={constants.ICONS.FOG} size={22} color={isAbsolute ? 'black' : constants.COLORS.SIMPLE.GRAY} />
-        <Text style={{...getTemperatureStyles(isAbsolute)}}>-1°</Text>
-      </View>
     </Animated.View>
   );
 }
