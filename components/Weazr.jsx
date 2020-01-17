@@ -54,11 +54,10 @@ const Weazr = () => {
   )
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1
   },
 });
 
-export default React.memo(Weazr);
+export default Weazr;

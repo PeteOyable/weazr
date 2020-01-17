@@ -13,21 +13,11 @@ const { height, width } = Dimensions.get('window');
 const AnimatedSvg = Animated.createAnimatedComponent(Svg);
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
-const Informations = ({ gestureHandler, constrainedY, paddingForecast, summaryOpacity, summaryY, forecastOpacity, forecastY, panPath }) => {
-  const panGesture = React.createRef();
-  const tabGesture = React.createRef();
-
+const Informations = ({ gestureHandler, constrainedY, summaryOpacity, summaryY, forecastOpacity, forecastY, panPath }) => {
   const { color } = useColors();
 
   return (
-    <PanGestureHandler
-      ref={panGesture}
-      simultaneousHandlers={tabGesture}
-      maxPointers={1}
-      minDist={10}
-      waitFor={tabGesture}
-      {...gestureHandler}
-    >
+    <PanGestureHandler {...gestureHandler}>
       <Animated.View style={[
         styles.panContainer,
         {

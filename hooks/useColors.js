@@ -6,7 +6,6 @@ const defineColors = () => {
   const hour = dayjs().hour();
   let gradient = constants.COLORS.GRADIENTS.NIGHT;
   let color = constants.COLORS.SIMPLE.NIGHT;
-  console.log(hour);
   if (constants.MOMENT.MORNING.includes(hour)) {
     gradient = constants.COLORS.GRADIENTS.MORNING;
     color = constants.COLORS.SIMPLE.MORNING;
