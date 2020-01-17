@@ -82,8 +82,6 @@ const useAnimation = () => {
     END
   );
 
-  console.log(insets);
-
   const translateY =
     cond(
       eq(state, State.ACTIVE),

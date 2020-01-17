@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-//import { getCurrentConditions, getForecastByHour , getForecastForWeek} from '../api';
-import { getCurrentConditions, getForecastByHour, getForecastForWeek } from '../mocks';
+import { getCurrentConditions, getForecastByHour , getForecastForWeek} from '../api';
+//import { getCurrentConditions, getForecastByHour, getForecastForWeek } from '../mocks';
 import constants from "../constants";
 
 const useWeather = () => {
@@ -40,13 +40,13 @@ const useWeather = () => {
 
   useEffect(() => {
     if (!init) {
-      /* fetchCurrentConditions();
+      fetchCurrentConditions();
       fetchForecastByHour();
-      fetchForecastForWeek(); */
+      fetchForecastForWeek();
 
-      setCurrentConditions(getCurrentConditions());
+      /* setCurrentConditions(getCurrentConditions());
       setForecastByHour(getForecastByHour());
-      setForecastForWeek(getForecastForWeek());
+      setForecastForWeek(getForecastForWeek()); */
       setInit(true);
     }
     return () => { };
