@@ -38,8 +38,7 @@ const Informations = ({ gestureHandler, constrainedY, paddingForecast, summaryOp
         <AnimatedSvg style={{...styles.svg}} height={50} width={width}>
           <Defs>
             <ClipPath id="clipPath">
-              <AnimatedPath d={panPath} fill={constants.COLORS.SIMPLE.MORNING}  />
-              {/* <AnimatedCircle r={height * 0.60} cx={width / 2} cy={gradientY} /> */}
+              <AnimatedPath d={panPath} />
             </ClipPath>
           </Defs>
           <Rect
@@ -73,7 +72,6 @@ const styles = StyleSheet.create({
     backgroundColor: constants.COLORS.SIMPLE.WHITE,
     position: 'relative',
     height: height,
-    overflow: 'visible'
   },
 
   svg: {

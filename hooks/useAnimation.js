@@ -1,8 +1,9 @@
 import Animated from 'react-native-reanimated'
 import { onGestureEvent, spring, interpolatePath } from 'react-native-redash';
 import { State } from 'react-native-gesture-handler';
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 import { path } from 'd3-path';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 const {
   add,
@@ -66,6 +67,8 @@ const useAnimation = () => {
 
   const linedPath = getLinePath();
   const curvedPath = getCurvedPath();
+
+  const insets = useSafeArea();
   
   const gestureHandler = onGestureEvent({
     translationY,
@@ -78,6 +81,8 @@ const useAnimation = () => {
     START,
     END
   );
+
+  console.log(insets);
 
   const translateY =
     cond(
@@ -133,7 +138,7 @@ const useAnimation = () => {
 
   const weatherY = interpolate(translateY, {
     inputRange: [START, END],
-    outputRange: [-100, 0],
+    outputRange: [-65 - insets.top, 0],
     extrapolate: Extrapolate.CLAMP
   });
   
@@ -206,13 +211,13 @@ const useAnimation = () => {
   const panPath = interpolatePath(translateY, {
     inputRange: [START, END],
     outputRange: [linedPath, curvedPath],
-  })
+  });
 
   return {
     gestureHandler,
     constrainedY,
     gradientHeight,
-    panPath,
+    panPath: Platform.select({android: getCurvedPath(), ios : panPath}),
     gradientY,
     weatherY,
     iconScale,
